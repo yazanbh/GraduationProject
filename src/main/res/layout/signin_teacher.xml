@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:src="@drawable/teacher"
+                android:layout_marginTop="50dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sign in as Teacher"
+                android:textAlignment="center"
+                android:layout_marginTop="30dp"
+                android:textSize="25dp"
+                android:textStyle="bold"
+                android:fontFamily="@font/nunito"
+                android:layout_gravity="center"
+                android:textColor="#293859"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:textDirection="ltr"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="email"
+                app:startIconDrawable="@drawable/email_24"
+                android:background="@color/white"
+                android:layout_marginBottom="27dp"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="40dp"
+                android:layout_marginTop="50dp"
+                app:boxStrokeColor="#FF9800">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:textDirection="ltr"
+                    android:id="@+id/teacher_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textEmailAddress"
+                    android:background="@color/white"
+                    android:ems="15"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:textDirection="ltr"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="password"
+                app:startIconDrawable="@drawable/lock_24"
+                android:background="@color/white"
+                app:passwordToggleEnabled="true"
+                app:passwordToggleTint="#293859"
+                android:layout_marginBottom="36dp"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="40dp"
+                app:boxStrokeColor="#293859">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:textDirection="ltr"
+                    android:id="@+id/teacher_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    android:background="@color/white"
+                    android:ems="15"
+                    />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <Button
+                android:id="@+id/teacher_signin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="13dp"
+                android:text="Sign in"
+                android:textStyle="bold"
+                android:textSize="15dp"
+                android:backgroundTint="#293859"
+                android:layout_marginRight="80dp"
+                android:layout_marginLeft="80dp"
+                />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Don't have an account? "
+                    android:textSize="15dp"
+                    android:fontFamily="@font/nunito"
+                    android:textStyle="bold"
+                    android:textColor="#000"
+                    android:textDirection="ltr"
+                    />
+                <TextView
+                    android:textDirection="ltr"
+                    android:id="@+id/lec_signup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Register"
+                    android:textSize="15dp"
+                    android:fontFamily="@font/nunito"
+                    android:textStyle="bold"
+                    android:textColor="#FF9800"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                >
+                <TextView
+                    android:id="@+id/lec_ForgotPassword"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Forgot Password?"
+                    android:textAlignment="center"
+                    android:padding="20dp"
+                    android:textStyle="bold"
+                    android:gravity="right"
+                    android:textSize="15dp"
+                    android:textColor="#FF9800"
+                    />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

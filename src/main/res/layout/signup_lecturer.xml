@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".lecturer.Signup_Lecturer">
+    <!-- Nested Scroll view -->
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30sp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:paddingTop="16dp"
+            >
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:src="@drawable/teacher"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
+                android:paddingTop="20dp"
+                android:paddingBottom="10dp"
+                android:text="Lecturer Sign Up"
+                android:gravity="center"
+                android:textColor="#293859"
+                android:textSize="25dp"
+                tools:ignore="TextSizeCheck"
+                android:textAlignment="center"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Name"
+                app:startIconDrawable="@drawable/user"
+                android:background="@color/white"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="40dp"
+                android:layout_marginTop="20dp"
+                app:boxStrokeColor="#FF9800">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/signup_lec_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:background="@color/white"
+                    android:ems="15"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="email"
+                app:startIconDrawable="@drawable/email_24"
+                android:background="@color/white"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="40dp"
+                android:layout_marginTop="20dp"
+                app:boxStrokeColor="#FF9800">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/signup_lec_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textEmailAddress"
+                    android:background="@color/white"
+                    android:ems="15"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="password"
+                app:startIconDrawable="@drawable/lock_24"
+                android:background="@color/white"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="40dp"
+                android:layout_marginTop="20dp"
+                app:boxStrokeColor="#FF9800"
+                app:passwordToggleEnabled="true"
+                app:passwordToggleTint="#CFB081">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/signup_lec_pass1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    android:background="@color/white"
+                    android:ems="15"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="RePassword"
+                app:startIconDrawable="@drawable/lock_24"
+                android:background="@color/white"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="40dp"
+                android:layout_marginTop="20dp"
+                app:boxStrokeColor="#FF9800"
+                app:passwordToggleEnabled="true"
+                app:passwordToggleTint="#CFB081">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/signup_lec_pass2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    android:background="@color/white"
+                    android:ems="15"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+            <Button
+                android:id="@+id/signup_lec_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="13dp"
+                android:text="Sign Up"
+                android:textStyle="bold"
+                android:textSize="15dp"
+                android:backgroundTint="#293859"
+                android:layout_marginRight="80dp"
+                android:layout_marginLeft="80dp"
+                />
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

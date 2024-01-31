@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginLeft="4dp"
+    android:layout_marginRight="4dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginBottom="4dp"
+    android:transitionName="ExampleTransition"
+    app:cardCornerRadius="15dp"
+    android:background="@drawable/dialog_bg"
+    style="@style/full_screen_dialog">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+                <RelativeLayout
+                    android:id="@+id/frame_bg"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:paddingLeft="12dp"
+                    android:paddingTop="12dp"
+                    android:paddingRight="12dp"
+                    android:paddingBottom="12dp">
+
+
+        <EditText
+            android:id="@+id/name_student_popup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="16dp"
+            android:hint="Student name"/>
+        <EditText
+            android:id="@+id/regNo_student_popup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:hint="Reg. No"
+            android:layout_below="@+id/name_student_popup"/>
+
+        <LinearLayout
+            android:id="@+id/buttons"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="2"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginBottom="12dp"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal"
+            android:layout_below="@+id/regNo_student_popup">
+
+                <TextView
+                    android:id="@+id/cancel_btn_popup"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:padding="10dp"
+                    android:text="Cancel"
+                    android:textSize="16sp"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:background="#293859"
+                    android:layout_marginEnd="3dp"
+                    android:gravity="center"
+                    tools:ignore="UnusedAttribute" />
+                <TextView
+                    android:id="@+id/add_btn_popup"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:padding="10dp"
+                    android:text="Add"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:layout_marginStart="3dp"
+                    android:background="#293859"
+                    android:textColor="@color/white"
+                    android:gravity="center"
+                    tools:targetApi="m"
+                    tools:ignore="UnusedAttribute" />
+
+        </LinearLayout>
+<TextView
+    android:id="@+id/excel"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/buttons"
+    android:text="Import students from Excel File?"
+    android:textSize="16dp"
+    android:textColor="#293859"
+    android:padding="10dp"/>
+                </RelativeLayout>
+
+        </FrameLayout>
+
+
+</com.google.android.material.card.MaterialCardView>

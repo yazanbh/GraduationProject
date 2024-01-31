@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    android:id="@+id/cardView_adapter"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:transitionName="ExampleTransition"
+    app:cardCornerRadius="12dp"
+    android:layout_marginRight="20dp"
+    android:layout_marginLeft="20dp"
+    android:layout_marginTop="10dp"
+    android:layout_marginBottom="10dp"
+    >
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+        <ImageView
+            android:id="@+id/imageClass_adapter"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/button_back_white"
+            android:scaleType="centerCrop"/>
+
+        <RelativeLayout
+            android:id="@+id/frame_bg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="12dp"
+            android:paddingTop="12dp"
+            android:paddingRight="12dp"
+            android:paddingBottom="12dp"
+            android:background="@drawable/gradient_color_3"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/CourseName_adapter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="PHP Course"
+                android:textColor="@color/white"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                android:gravity="left"/>
+
+            <TextView
+                android:id="@+id/CourseID_adapter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/CourseName_adapter"
+                android:layout_marginTop="8dp"
+                android:text="901033"
+                android:textColor="@color/white"
+                android:textSize="15dp"
+                android:textStyle="bold"
+                android:textDirection="ltr"/>
+            <TextView
+                android:id="@+id/CourseSec_adapter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/CourseID_adapter"
+                android:layout_marginTop="8dp"
+                android:text="Sec 2"
+                android:textColor="@color/white"
+                android:textSize="15dp"
+                android:textStyle="bold"
+                android:textDirection="ltr"/>
+
+        </RelativeLayout>
+
+    </FrameLayout>
+</com.google.android.material.card.MaterialCardView>

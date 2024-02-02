@@ -3,19 +3,16 @@ package com.it.attendance.lecturer;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.annotation.SuppressLint;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import com.developer.kalert.KAlertDialog;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -24,13 +21,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.it.attendance.MainActivity;
 import com.it.attendance.R;
-import com.it.attendance.student.HomePage_std;
-import com.it.attendance.student.Login_std;
-import com.saadahmedsoft.popupdialog.PopupDialog;
-import com.saadahmedsoft.popupdialog.Styles;
-import com.saadahmedsoft.popupdialog.listener.OnDialogButtonClickListener;
 
 import io.paperdb.Paper;
 
@@ -40,6 +31,7 @@ public class profile extends AppCompatActivity {
     FirebaseFirestore db;
     private FirebaseAuth auth;
     Context context;
+    KAlertDialog pDialogSuccess,pDialogWarining,pDialogProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,57 +92,66 @@ public class profile extends AppCompatActivity {
 
         //LogOut
         ImageView logout = findViewById(R.id.LogOut);
-        logout.setOnClickListener(view -> {            // Sign out the current user
-
-            PopupDialog.getInstance(this)
-                    .setStyle(Styles.STANDARD)
-                    .setHeading("        Confirm Logout")
-                    .setDescription("Are you sure you want to logout?")
-                    .setPopupDialogIcon(R.drawable.logout)
-                    .setPopupDialogIconTint(R.color.red_new)
-                    .setCancelable(false)
-                    .setPositiveButtonText("Confirm")
-                    .showDialog(new OnDialogButtonClickListener() {
-                        @Override
-                        public void onPositiveClicked(Dialog dialog) {
-                            super.onPositiveClicked(dialog);
-
-                            Paper.init(getApplicationContext());
-                            Paper.book().write("isLoggedIn", "false");
-                            Paper.book().write("type", "student");
-
-                            auth.signOut();
-                            Intent intent = new Intent(getApplicationContext(), Login_lecturer.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            finishAffinity();
-                            startActivity(intent);
-                            overridePendingTransition(0, 0);
-                            finish();
-
-
-                        }
-
-                        @Override
-                        public void onNegativeClicked(Dialog dialog) {
-                            super.onNegativeClicked(dialog);
-                        }
-                    });
-
+        logout.setOnClickListener(view -> {
+            // Sign out the current user
+            pDialogWarining = new KAlertDialog(this, KAlertDialog.WARNING_TYPE,false);
+            pDialogWarining.setTitleText("Logout");
+            pDialogWarining.confirmButtonColor(R.color.blue);
+            pDialogWarining.cancelButtonColor(R.color.blue);
+            pDialogWarining.setContentText("Are you sure you want to logout?");
+            pDialogWarining.setCancelClickListener("Cancel", new KAlertDialog.KAlertClickListener() {
+                @Override
+                public void onClick(KAlertDialog kAlertDialog) {
+                    pDialogWarining.dismissWithAnimation();
+                }
+            });
+            pDialogWarining.setConfirmClickListener("Logout", new KAlertDialog.KAlertClickListener() {
+                @Override
+                public void onClick(KAlertDialog kAlertDialog) {
+                    Paper.init(getApplicationContext());
+                    Paper.book().write("isLoggedIn", "false");
+                    auth.signOut();
+                    Intent intent = new Intent(getApplicationContext(), Login_lecturer.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    finishAffinity();
+                    startActivity(intent);
+                    overridePendingTransition(0, 0);
+                    finish();
+                    pDialogWarining.dismissWithAnimation();
+                }
+            });
+       pDialogWarining.show();
 
         });//end Logout image event
 
+
+
+
+
         //go back page
         ImageView back = findViewById(R.id.back);
-        back.setOnClickListener(view -> {            // Sign out the current user
+        back.setOnClickListener(view -> {            // back to homepage
             onBackPressed();
         });
+
+
+
+
 
         //verified the email address
         LinearLayout verf= findViewById(R.id.verification);
         verf.setOnClickListener(view ->{
+            pDialogProgress = new KAlertDialog(this, KAlertDialog.PROGRESS_TYPE,false);
+            pDialogProgress.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+            pDialogProgress.setTitleText("Loading");
+            pDialogProgress.setCancelable(false);
+            pDialogProgress.show();
             checkAndSendVerificationEmail();
         });//end linearlayout
+
+
+
 
         FirebaseUser firebaseUser = auth.getCurrentUser();
         if(firebaseUser.isEmailVerified()){
@@ -164,28 +165,36 @@ public class profile extends AppCompatActivity {
         }
 
 
+
+
         //change password
         LinearLayout changePass = findViewById(R.id.changePass);
         changePass.setOnClickListener(view ->{
+            pDialogProgress = new KAlertDialog(this, KAlertDialog.PROGRESS_TYPE,false);
+            pDialogProgress.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+            pDialogProgress.setTitleText("Loading");
+            pDialogProgress.setCancelable(false);
+            pDialogProgress.show();
+
+            pDialogSuccess = new KAlertDialog(this, KAlertDialog.SUCCESS_TYPE,false);
+            pDialogSuccess.setTitleText("Successfully");
+            pDialogSuccess.setContentText("Check your mailbox to reset your password!");
+            pDialogSuccess.confirmButtonColor(R.color.blue);
+            pDialogSuccess.setConfirmClickListener("Ok", new KAlertDialog.KAlertClickListener() {
+                @Override
+                public void onClick(KAlertDialog kAlertDialog) {
+                    pDialogSuccess.dismissWithAnimation();
+                }
+            });
+
             auth.sendPasswordResetEmail(auth.getCurrentUser().getEmail()).addOnCompleteListener(task -> {
                 if(task.isSuccessful()){
-               /*     PopupDialog.getInstance(this)
-                            .setStyle(Styles.IOS)
-                            .setHeading("Password reset email sent!")
-                            .setDescription("check your email box")
-                            .setCancelable(false)
-                            .setPositiveButtonText("Ok")
-
-                            .showDialog(new OnDialogButtonClickListener() {
-                                @Override
-                                public void onPositiveClicked(Dialog dialog) {
-                                    super.onPositiveClicked(dialog);
-                                }
-                            });*/
-                    
-                  //  Toast.makeText(getApplicationContext(), "", Toast.LENGTH_SHORT).show();
+                    pDialogProgress.dismissWithAnimation();
+                    pDialogSuccess.show();
                 }else{
+                    pDialogProgress.dismissWithAnimation();
                     Toast.makeText(getApplicationContext(), "Error in sending password reset email", Toast.LENGTH_SHORT).show();
+
                 }
             });//end sendPasswordResetEmail
 
@@ -205,17 +214,9 @@ public class profile extends AppCompatActivity {
                 sendVerificationEmail();
             } else {
                 // User is already verified
-
-                PopupDialog.getInstance(this)
-                        .setStyle(Styles.ALERT)
-                        .setDescription("Email is already verified")
-                        .setCancelable(false)
-                        .showDialog(new OnDialogButtonClickListener() {
-                            @Override
-                            public void onDismissClicked(Dialog dialog) {
-                                super.onDismissClicked(dialog);
-                            }
-                        });//end dialog
+                pDialogProgress.dismissWithAnimation();
+                Toast.makeText(getApplicationContext(), "Email is already verified",
+                        Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -224,16 +225,29 @@ public class profile extends AppCompatActivity {
         FirebaseUser user = auth.getCurrentUser();
 
         if (user != null) {
+
+            pDialogSuccess = new KAlertDialog(this, KAlertDialog.SUCCESS_TYPE,false);
+            pDialogSuccess.setTitleText("Successfully");
+            pDialogSuccess.setContentText("Verification email sent to " + user.getEmail().toString());
+            pDialogSuccess.confirmButtonColor(R.color.blue);
+            pDialogSuccess.setConfirmClickListener("Ok", new KAlertDialog.KAlertClickListener() {
+                @Override
+                public void onClick(KAlertDialog kAlertDialog) {
+                    pDialogSuccess.dismissWithAnimation();
+                }
+            });
+
+
             user.sendEmailVerification()
                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
-                                Toast.makeText(getApplicationContext(),
-                                        "Verification email sent to " + user.getEmail(),
-                                       Toast.LENGTH_SHORT).show();
-
+                                pDialogProgress.dismissWithAnimation();
+                                pDialogSuccess.show();
                             } else {
+                                pDialogProgress.dismissWithAnimation();
+
                                 Log.e("EmailVerification", "sendEmailVerification", task.getException());
                                 Toast.makeText(getApplicationContext(),
                                         "Failed to send verification email.",

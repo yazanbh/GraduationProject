@@ -30,7 +30,9 @@
             android:exported="false" />
         <activity
             android:name=".student.Class_detail_std"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/dialog"
+            />
         <activity
             android:name=".student.HomePage_std"
             android:exported="false" />

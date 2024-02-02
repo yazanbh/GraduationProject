@@ -56,8 +56,8 @@ dependencies {
     implementation ("io.github.pilgr:paperdb:2.7.2")
     implementation ("com.github.pro100svitlo:creditCardNfcReader:1.0.3")
     implementation ("com.android.support:multidex:1.0.3")
-    implementation ("com.saadahmedev.popup-dialog:popup-dialog:1.0.5")
-
+    implementation ("io.github.tutorialsandroid:kalertdialog:20.5.8")
+    implementation ("com.github.TutorialsAndroid:progressx:v6.0.19") //required for kalertdialog lib
 
 }
 

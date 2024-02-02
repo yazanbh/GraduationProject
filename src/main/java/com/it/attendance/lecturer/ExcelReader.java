@@ -156,16 +156,7 @@ public class ExcelReader {
 
 
                 });//end docRef
-
-
-                // Assuming you have a Calendar instance named "calendar"
-                Calendar calendar = Calendar.getInstance();
-
-                // Define the date format
-                SimpleDateFormat sdf = new SimpleDateFormat("dd_MM_yyyy", Locale.ENGLISH);
-
-                // Format the Calendar instance as a string
-                String formattedDate = sdf.format(calendar.getTime());
+                String formattedDate = "test";
 
                 //document reference for attendance
                 DocumentReference docReff = db.collection("attendance").document(courseNumber).collection(Email).document(formattedDate);

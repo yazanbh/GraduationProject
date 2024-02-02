@@ -155,7 +155,6 @@ public class Class_Detail_lecturer extends AppCompatActivity implements CardNfcA
             }
         });
 
-
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
         Button take_attendance = findViewById(R.id.submit_attendance_btn);
         if (mNfcAdapter == null){
@@ -188,8 +187,6 @@ public class Class_Detail_lecturer extends AppCompatActivity implements CardNfcA
                 start_take_attendance=true;
                 counter++;
                 take_attendance.setText("Stop take attendance");
-              //  stdArrayList.clear();
-              //  getEnrollStudents();
                 recyclerView.setAdapter(takeAttendanceAdapter);
                 takeAttendanceAdapter.notifyDataSetChanged();
             }
@@ -198,8 +195,6 @@ public class Class_Detail_lecturer extends AppCompatActivity implements CardNfcA
                 take_attendance.setText("Start take attendance");
                 counter++;
 
-                stdArrayList.clear();
-                getEnrollStudents();
                 recyclerView.setAdapter(stdAdapter);
                 stdAdapter.notifyDataSetChanged();
 
@@ -534,13 +529,14 @@ public class Class_Detail_lecturer extends AppCompatActivity implements CardNfcA
     protected void onResume() {
         super.onResume();
         mIntentFromCreate = false;
-        if (mNfcAdapter != null && !mNfcAdapter.isEnabled()){
-            showTurnOnNfcDialog();
-        } else if (mNfcAdapter != null){
-            Log.e("hamza","nfc activeated");
-            mCardNfcUtils.enableDispatch();
-        }
-
+        if(start_take_attendance) {
+            if (mNfcAdapter != null && !mNfcAdapter.isEnabled()) {
+                showTurnOnNfcDialog();
+            } else if (mNfcAdapter != null) {
+                Log.e("hamza", "nfc activeated");
+                mCardNfcUtils.enableDispatch();
+            }
+        }//end if(start_take_attendance)
     }
 
 
@@ -685,7 +681,7 @@ public class Class_Detail_lecturer extends AppCompatActivity implements CardNfcA
         else if(list==null){
             Toast.makeText(Class_Detail_lecturer.this, "Please add student before take attendance!", Toast.LENGTH_SHORT).show();
         }//end else if
-        else{
+        else if (!list.contains(Email)){
             Toast.makeText(Class_Detail_lecturer.this, "The Student is not in this Course!", Toast.LENGTH_SHORT).show();
         }//end else
     }//end function

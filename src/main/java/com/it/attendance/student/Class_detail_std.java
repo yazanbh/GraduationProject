@@ -44,7 +44,6 @@ import java.util.Objects;
 
 public class Class_detail_std extends AppCompatActivity {
     FirebaseFirestore db;
-    Date date1;
     ImageView img_btn;
     TextView cname,PresentCount,AbsentCount,percent;
     SwipeRefreshLayout swipeLayout;

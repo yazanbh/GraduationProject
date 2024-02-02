@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.developer.kalert.KAlertDialog;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -24,7 +25,7 @@ public class Login_std extends AppCompatActivity {
     TextView btn, forgot_pass, sign_up;
     EditText emailEditText , passwordEditText;
     FirebaseAuth mAuth;
-
+    KAlertDialog pDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +59,10 @@ public class Login_std extends AppCompatActivity {
         });
 
 
-
+        pDialog = new KAlertDialog(this, KAlertDialog.PROGRESS_TYPE,false);
+        pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+        pDialog.setTitleText("Loading");
+        pDialog.setCancelable(false);
     }//end onCreate
     private void LoginUser(){
         // get string of email and password and remove any space
@@ -67,6 +71,7 @@ public class Login_std extends AppCompatActivity {
 
 
         if(validate()){
+            pDialog.show();
             // Perform Firebase Authentication
             mAuth.signInWithEmailAndPassword(email.trim(), password.trim())
                     .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -85,10 +90,12 @@ public class Login_std extends AppCompatActivity {
                                 Paper.book().write("type", "student");
 
                                 Intent intent = new Intent(Login_std.this, HomePage_std.class);
+                                pDialog.dismissWithAnimation();
                                 startActivity(intent);
 
                             }
                             else {
+                                pDialog.dismissWithAnimation();
                                 // If sign in fails, display a message to the user.
                                 Toast.makeText(Login_std.this, "Authentication failed.",
                                         Toast.LENGTH_SHORT).show();

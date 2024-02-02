@@ -12,7 +12,9 @@
         <item name="android:windowContentTransitions" tools:targetApi="lollipop">true</item>
         <item name="android:homeAsUpIndicator">@drawable/ic_round_arrow_back_24_dark</item>
     </style>
+    <style name="dialog" parent="Theme.AppCompat">
 
+    </style>
     <!-- on below line creating a theme for our Alert Dialog -->
     <style name="AlertDialogCustom" parent="@style/MaterialAlertDialog.Material3">
         <!-- on below line adding text color for our text in alert dialog -->

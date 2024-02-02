@@ -80,10 +80,6 @@ public class TakeAttendanceAdapter extends RecyclerView.Adapter<TakeAttendanceAd
         data.put("name",student.getName());
         db = FirebaseFirestore.getInstance();
 
-
-
-
-
         //get attendance status
         DocumentReference docRef = db.collection("attendance")
                 .document(cNumber).collection(student.getEmail()).document(getDate());
@@ -96,12 +92,28 @@ public class TakeAttendanceAdapter extends RecyclerView.Adapter<TakeAttendanceAd
                         Log.d("TAG", "Document exist");
 
                         boolean boolValue = document.getBoolean("IsPresent");
+                       data.put("IsPresent",boolValue);
                         Log.e("bool value",String.valueOf(boolValue));
                         holder.checkBox.setChecked(boolValue); // Set the checkbox state based on the retrieved value
                     } else {
+                        data.put("IsPresent",false);
                         // Handle the case where the document doesn't exist
-                        Log.d("TAG", "Document does not exist");
+                        Log.d("TAG", "Document does not exist, the email "+student.getEmail()+" set to absent");
+
                     }
+                    db = FirebaseFirestore.getInstance();
+                    //document reference for attendance
+                    CollectionReference collectionRef = db.collection("attendance").document(cNumber).collection(student.getEmail());
+                    collectionRef.document(today).set(data).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            Log.d("TakeAttendanceAdapter", "auto attendance set");
+                        }
+                    }) .addOnFailureListener(e -> {
+                        Log.e("TAG", "Error set auto attendance", e);
+                        // Handle errors gracefully (e.g., display error message to user)
+                    });
+
                 } else {
                     // Handle any errors that occurred during the get operation
                     Log.d("TAG", "Error getting document: ", task.getException());

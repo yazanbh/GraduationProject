@@ -9,12 +9,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.developer.kalert.KAlertDialog;
 import com.google.firebase.auth.FirebaseAuth;
 import com.it.attendance.MainActivity;
 import com.it.attendance.R;
 import com.it.attendance.forgot_password;
-import com.saadahmedsoft.popupdialog.PopupDialog;
-import com.saadahmedsoft.popupdialog.Styles;
 
 import io.paperdb.Paper;
 
@@ -23,7 +23,7 @@ public class Login_lecturer extends AppCompatActivity {
     Button btn;
     TextView signup,ForgotPass;
     FirebaseAuth mAuth;
-
+    KAlertDialog pDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +43,15 @@ public class Login_lecturer extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         //move from login page to start student or lecturer page after validation
-        btn.setOnClickListener(view -> LoginUser());
+        btn.setOnClickListener(view ->{
+        pDialog = new KAlertDialog(this, KAlertDialog.PROGRESS_TYPE,false);
+        pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+        pDialog.setTitleText("Loading");
+        pDialog.setCancelable(false);
+        pDialog.show();
+                LoginUser();
+
+        });
 
         //forgot password
         ForgotPass=findViewById(R.id.lec_ForgotPassword);
@@ -57,18 +65,11 @@ public class Login_lecturer extends AppCompatActivity {
     }//end on create
 
     private void LoginUser(){
-
         // get string of email and password and remove any space
         String uemail = email.getText().toString().trim();
         String password = pass.getText().toString().trim();
 
-
         if(validate()){
-            PopupDialog.getInstance(this)
-                    .setStyle(Styles.PROGRESS)
-                    .setProgressDialogTint(Color.BLUE)
-                    .setCancelable(false)
-                    .showDialog();
             // Perform Firebase Authentication
             mAuth.signInWithEmailAndPassword(uemail.trim(), password.trim())
                     .addOnCompleteListener(task -> {
@@ -81,10 +82,11 @@ public class Login_lecturer extends AppCompatActivity {
                             Paper.book().write("isLoggedIn", "true");
                             Paper.book().write("type", "teacher");
                          //   Toast.makeText(Login_lecturer.this, "Authentication successfully.", Toast.LENGTH_SHORT).show();
-                            PopupDialog.getInstance(this).dismissDialog();
-                            startActivity(new Intent(Login_lecturer.this, lecturer_Home_Page.class));
+                            pDialog.dismissWithAnimation();
+                        startActivity(new Intent(Login_lecturer.this, lecturer_Home_Page.class));
 
                         } else {
+                            pDialog.dismissWithAnimation();
                             // If sign in fails, display a message to the user.
                             Toast.makeText(Login_lecturer.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();

@@ -2,9 +2,11 @@ package com.it.attendance.lecturer;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -44,13 +46,15 @@ public class Login_lecturer extends AppCompatActivity {
 
         //move from login page to start student or lecturer page after validation
         btn.setOnClickListener(view ->{
+            // Hide the keyboard
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(), 0);
+
         pDialog = new KAlertDialog(this, KAlertDialog.PROGRESS_TYPE,false);
         pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
         pDialog.setTitleText("Loading");
         pDialog.setCancelable(false);
-        pDialog.show();
-                LoginUser();
-
+        LoginUser();
         });
 
         //forgot password
@@ -70,6 +74,8 @@ public class Login_lecturer extends AppCompatActivity {
         String password = pass.getText().toString().trim();
 
         if(validate()){
+            pDialog.show();
+
             // Perform Firebase Authentication
             mAuth.signInWithEmailAndPassword(uemail.trim(), password.trim())
                     .addOnCompleteListener(task -> {

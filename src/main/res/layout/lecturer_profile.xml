@@ -133,7 +133,9 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
-                            android:orientation="vertical">
+                            android:orientation="vertical"
+                            android:layout_marginBottom="?actionBarSize"
+                            >
 
                             <LinearLayout
                                 android:id="@+id/verification"
@@ -223,49 +225,6 @@
                                 </LinearLayout>
                             </LinearLayout>
 
-
-
-                            <LinearLayout
-                                android:id="@+id/UnversityID"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="20dp"
-                                android:gravity="center_vertical"
-                                android:paddingRight="8dp"
-                                >
-
-                                <ImageView
-                                    android:layout_width="50dp"
-                                    android:layout_height="50dp"
-                                    android:background="@drawable/circular_grey_bordersolid"
-                                    android:padding="12dp"
-                                    android:src="@drawable/creditcard" />
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="horizontal"
-                                    android:weightSum="8">
-
-                                    <TextView
-                                        android:textDirection="ltr"
-                                        android:layout_width="0dp"
-                                        android:layout_weight="7"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginLeft="20dp"
-                                        android:text="Add Uneversity ID"
-                                        android:textSize="18sp"
-                                        android:textColor="@color/gray"
-                                        android:fontFamily="@font/nunito" />
-
-                                    <ImageView
-                                        android:layout_width="0dp"
-                                        android:layout_weight="1"
-                                        android:layout_height="match_parent"
-                                        android:src="@drawable/forward"
-                                        android:layout_gravity="center_vertical"/>
-                                </LinearLayout>
-                            </LinearLayout>
 
                             <!--Contact Details-->
                             <LinearLayout

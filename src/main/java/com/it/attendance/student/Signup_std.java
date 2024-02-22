@@ -1,13 +1,19 @@
 package com.it.attendance.student;
 import static android.provider.Settings.*;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.developer.kalert.KAlertDialog;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -21,6 +27,7 @@ public class Signup_std extends AppCompatActivity {
     Button signup;
     EditText Name,Email,pass1,pass2;
     private FirebaseAuth mAuth;
+    KAlertDialog pDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +46,15 @@ public class Signup_std extends AppCompatActivity {
         pass2=findViewById(R.id.signup_std_pass2);
         signup=findViewById(R.id.signup_std_btn);
         signup.setOnClickListener(view -> {
+            // Hide the keyboard
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(), 0);
             if(validate()){
-
+                pDialog = new KAlertDialog(this, KAlertDialog.PROGRESS_TYPE,false);
+                pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+                pDialog.setTitleText("Loading");
+                pDialog.setCancelable(false);
+                pDialog.show();
                 mAuth.createUserWithEmailAndPassword(Email.getText().toString(), pass1.getText().toString())
                         .addOnSuccessListener(authResult -> {
                            /* mAuth.getCurrentUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -69,12 +83,15 @@ public class Signup_std extends AppCompatActivity {
                                     Log.d("TAG", "Error saving device ID: ", task.getException());
                                 }
                             });
-
+                            pDialog.dismissWithAnimation();
                             //move to login page
                             Intent intent = new Intent(Signup_std.this, Login_std.class);
                             startActivity(intent);
                         })
-                        .addOnFailureListener(e -> Toast.makeText(Signup_std.this, "cannot sign up", Toast.LENGTH_SHORT).show());
+                        .addOnFailureListener(e -> {
+                            pDialog.dismissWithAnimation();
+                            Toast.makeText(Signup_std.this, "cannot sign up", Toast.LENGTH_SHORT).show();
+                        });
             }//end if
 
 

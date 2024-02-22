@@ -4,16 +4,13 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
         <item name="actionOverflowButtonStyle">@style/OverFlow</item>
+        <item name="cursorColor">#000000</item>
         <item name="android:windowLightStatusBar" tools:ignore="NewApi">true</item>
         <item name="android:statusBarColor" tools:targetApi="lollipop">@color/colorPrimary</item>
         <item name="android:fontFamily">@font/nunito</item>
         <item name="android:windowContentTransitions" tools:targetApi="lollipop">true</item>
         <item name="android:homeAsUpIndicator">@drawable/ic_round_arrow_back_24_dark</item>
-    </style>
-    <style name="dialog" parent="Theme.AppCompat">
-
     </style>
     <!-- on below line creating a theme for our Alert Dialog -->
     <style name="AlertDialogCustom" parent="@style/MaterialAlertDialog.Material3">
@@ -24,6 +21,33 @@
         <!-- on below line setting text size for text -->
         <item name="android:textSize">20sp</item>
     </style>
+
+
+
+
+    <!-- NFC Reader -->
+    <style name="linearLayoutStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:paddingBottom">5dp</item>
+        <item name="android:paddingLeft">10dp</item>
+        <item name="android:paddingRight">10dp</item>
+        <item name="android:paddingTop">5dp</item>
+    </style>
+
+    <!-- Button Styles -->
+    <style name="btnRadiusWhite">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/border_radius_white</item>
+        <item name="android:textColor">#fff</item>
+    </style>
+
+
+
+
     <style name="FullScreenTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimary</item>

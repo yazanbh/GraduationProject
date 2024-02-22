@@ -46,7 +46,9 @@
             android:layout_marginLeft="40dp"
             android:layout_marginRight="40dp"
             android:layout_marginTop="20dp"
-            app:boxStrokeColor="#293859">
+            app:hintTextColor="#000000"
+            app:cursorColor="#000"
+            app:boxStrokeColor="#000">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/signup_std_name"
@@ -67,7 +69,9 @@
             android:layout_marginLeft="40dp"
             android:layout_marginRight="40dp"
             android:layout_marginTop="20dp"
-            app:boxStrokeColor="#293859">
+            app:hintTextColor="#000000"
+            app:cursorColor="#000"
+            app:boxStrokeColor="#000">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/signup_std_email"
@@ -87,9 +91,11 @@
             android:layout_marginLeft="40dp"
             android:layout_marginRight="40dp"
             android:layout_marginTop="20dp"
-            app:boxStrokeColor="#293859"
             app:passwordToggleEnabled="true"
-            app:passwordToggleTint="#293859">
+            app:passwordToggleTint="#293859"
+            app:hintTextColor="#000000"
+            app:cursorColor="#000"
+            app:boxStrokeColor="#000">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/signup_std_pass1"
@@ -103,16 +109,18 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="RePassword"
+            android:hint="Confirm Password"
             app:startIconDrawable="@drawable/lock_24"
             android:background="@color/white"
             android:layout_marginBottom="10dp"
             android:layout_marginLeft="40dp"
             android:layout_marginRight="40dp"
             android:layout_marginTop="20dp"
-            app:boxStrokeColor="#293859"
             app:passwordToggleEnabled="true"
-            app:passwordToggleTint="#293859">
+            app:passwordToggleTint="#293859"
+            app:hintTextColor="#000000"
+            app:cursorColor="#000"
+            app:boxStrokeColor="#000">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/signup_std_pass2"

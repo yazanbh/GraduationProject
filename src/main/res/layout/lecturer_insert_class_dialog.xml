@@ -39,11 +39,14 @@
                 android:textAlignment="center"
                 android:textColor="@color/text_color_secondary"
                 android:textSize="20dp"
+                android:gravity="center"
                 android:textStyle="bold" />
 
 
             <EditText
                 android:id="@+id/CourseName"
+                app:hintTextColor="#000000"
+                app:cursorColor="#000"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/create"
@@ -65,10 +68,12 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginBottom="12dp"
+                android:inputType="numberDecimal"
                 android:background="@drawable/edittext_back"
                 android:focusedByDefault="true"
                 android:hint="Course ID"
-                android:inputType="text"
+                app:hintTextColor="#000000"
+                app:cursorColor="#000"
                 android:padding="16dp" />
 
             <EditText
@@ -82,6 +87,8 @@
                 android:focusedByDefault="true"
                 android:hint="Section"
                 android:inputType="numberDecimal"
+                app:hintTextColor="#000000"
+                app:cursorColor="#000"
 
                 android:padding="16dp" />
 
@@ -90,20 +97,20 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/CourseSection"
                 android:gravity="center"
-                android:layout_marginRight="50dp"
-                android:layout_marginLeft="50dp"
                 android:layout_marginTop="15dp">
 
 
                 <Button
                     android:id="@+id/button_createClass"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:backgroundTint="#293859"
                     android:fontFamily="@font/nunito"
                     android:text="Create Class"
+                    android:textSize="14sp"
                     android:textStyle="bold"
+                    android:padding="16dp"
 
                     />
 

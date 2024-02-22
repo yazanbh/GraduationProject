@@ -49,6 +49,7 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore:24.10.1")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
+    implementation("com.google.firebase:firebase-messaging:23.4.1")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -58,6 +59,10 @@ dependencies {
     implementation ("com.android.support:multidex:1.0.3")
     implementation ("io.github.tutorialsandroid:kalertdialog:20.5.8")
     implementation ("com.github.TutorialsAndroid:progressx:v6.0.19") //required for kalertdialog lib
+    implementation ("com.skyfishjy.ripplebackground:library:1.0.1")
+    implementation ("com.braintreepayments:card-form:3.0.0")
+
+
 
 }
 

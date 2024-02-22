@@ -42,7 +42,9 @@
                 android:layout_marginLeft="40dp"
                 android:layout_marginRight="40dp"
                 android:layout_marginTop="50dp"
-                app:boxStrokeColor="#FF9800">
+                app:hintTextColor="#000000"
+                app:cursorColor="#000"
+                app:boxStrokeColor="#000">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:textDirection="ltr"
@@ -67,6 +69,8 @@
                 android:layout_marginBottom="36dp"
                 android:layout_marginLeft="40dp"
                 android:layout_marginRight="40dp"
+                app:hintTextColor="#000000"
+                app:cursorColor="#000"
                 app:boxStrokeColor="#293859">
 
                 <com.google.android.material.textfield.TextInputEditText

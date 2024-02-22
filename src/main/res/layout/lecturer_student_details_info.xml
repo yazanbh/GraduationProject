@@ -24,13 +24,12 @@
             android:layout_height="wrap_content"
             android:text="يزن محمود فهد بني هاني"
             android:layout_marginLeft="10dp"
-            android:textSize="15sp"
+            android:textSize="14sp"
             android:textColor="#B5000000"
             android:gravity="left"            />
         <TextView
             android:id="@+id/student_regNo_detail_adapter"
-            android:textSize="15sp"
-
+            android:textSize="14sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="#B5000000"

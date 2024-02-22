@@ -10,6 +10,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -17,10 +19,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.developer.kalert.KAlertDialog;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -43,6 +47,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import io.paperdb.Paper;
+
 public class lecturer_Home_Page extends AppCompatActivity implements RecyclerViewInterface {
     BottomNavigationView bottomNavigationView;
     FloatingActionButton fab;
@@ -50,6 +56,8 @@ public class lecturer_Home_Page extends AppCompatActivity implements RecyclerVie
     ArrayList<course> courseArrayList;
     MyAdapter myAdapter;
     FirebaseFirestore db;
+    KAlertDialog pDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +114,33 @@ public class lecturer_Home_Page extends AppCompatActivity implements RecyclerVie
         fab.setOnClickListener(view -> OpenDialog());//end fab onClickListener
 
 
+        // Get a reference to the document
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        DocumentReference docRef = FirebaseFirestore.getInstance()
+                .collection("lecturer").document(mAuth.getCurrentUser().getEmail());
+        // Get the document
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Paper.init(getApplicationContext());
+                        // Extract data from the document
+                        String Name =document.getString("name");
+                        Log.e("myname in homePage",Name);
+                        Paper.book().write("name",Name);
+                        // Do something with the data
+                        Log.d(ContentValues.TAG, "Document existed");
+
+                    } else {
+                        Log.d(ContentValues.TAG, "No such document!");
+                    }
+                } else {
+                    Log.w(ContentValues.TAG, "Error getting document", task.getException());
+                }
+            }
+        });
     }//end onCreate
 
     @SuppressLint("NotifyDataSetChanged")
@@ -170,28 +205,69 @@ public class lecturer_Home_Page extends AppCompatActivity implements RecyclerVie
                 validate=false;
             }
             if(validate){
+                // Hide the keyboard
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(), 0);
+
+
+                pDialog = new KAlertDialog(this, KAlertDialog.PROGRESS_TYPE,false);
+                pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+                pDialog.setTitleText("Loading");
+                pDialog.setCancelable(false);
+                dialog.dismiss();
+                pDialog.show();
+
+
                 String cnum=mCID.getText().toString()+"sec"+mSec.getText().toString();
                 //store course name and course number into firestore
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
                 CollectionReference usersRef = db.collection("course");
                 DocumentReference userDocRef = usersRef.document(cnum);//course number
-                //get email for the current user from FirebaseAuth to filter the courses in home page
-                String CourseCreatedBy= FirebaseAuth.getInstance().getCurrentUser().getEmail();
 
-                Map<String, Object> updates = new HashMap<>();
-                updates.put("cNumber", mCID.getText().toString());
-                updates.put("cName", mCName.getText().toString());
-                updates.put("cSection", mSec.getText().toString());
-                updates.put("CreatedBy", CourseCreatedBy);
-                updates.put("enrollStudents",new ArrayList<String>());
+                //check if course is already in the database or not
+                userDocRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                // Document exists!
+                                Log.d(TAG, "Document exists!");
+                                // Access the document data:
+                                pDialog.dismissWithAnimation();                                // ...
+                                Toast.makeText(lecturer_Home_Page.this, "The course already exists", Toast.LENGTH_SHORT).show();
 
-                userDocRef.set(updates).addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        Log.d("TAG", "Course saved successfully");
-                        Toast.makeText(lecturer_Home_Page.this, "Successfully created course", Toast.LENGTH_SHORT).show();
-                        dialog.dismiss();
-                    } else {
-                        Log.d("TAG", "Error saving Course : ", task.getException());
+                            } else {
+                                // Document does not exist!
+                                Log.d(TAG, "Document does not exist!");
+                                //get email for the current user from FirebaseAuth to filter the courses in home page
+                                String CourseCreatedBy= FirebaseAuth.getInstance().getCurrentUser().getEmail();
+
+                                Map<String, Object> updates = new HashMap<>();
+                                updates.put("cNumber", mCID.getText().toString());
+                                updates.put("cName", mCName.getText().toString());
+                                updates.put("cSection", mSec.getText().toString());
+                                updates.put("CreatedBy", CourseCreatedBy);
+                                updates.put("enrollStudents",new ArrayList<String>());
+
+                                //create the course
+                                userDocRef.set(updates).addOnCompleteListener(task1 -> {
+                                    if (task1.isSuccessful()) {
+                                        pDialog.dismissWithAnimation();
+                                        Log.d("TAG", "Course saved successfully");
+                                        Toast.makeText(lecturer_Home_Page.this, "Successfully created course", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Log.d("TAG", "Error saving Course : ", task1.getException());
+                                        Toast.makeText(lecturer_Home_Page.this, "Error creation course", Toast.LENGTH_SHORT).show();
+
+                                    }
+                                });
+
+                            }
+                        } else {
+                            // Handle errors
+                            Log.d(TAG, "Error getting document: ", task.getException());
+                        }
                     }
                 });
 

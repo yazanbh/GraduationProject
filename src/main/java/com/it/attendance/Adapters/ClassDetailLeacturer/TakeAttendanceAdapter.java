@@ -65,7 +65,7 @@ public class TakeAttendanceAdapter extends RecyclerView.Adapter<TakeAttendanceAd
     public void onBindViewHolder(ViewHolder holder, int position) {
         stdShow student = studentList.get(position);
         holder.nameText.setText(student.getName());
-        holder.emailText.setText(student.getEmail());
+        holder.emailText.setText(student.getEmail().substring(0,student.getEmail().indexOf("@")));
         Paper.init(context);
 
         String cNumber= Paper.book().read("courseNumber");

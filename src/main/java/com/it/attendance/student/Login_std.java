@@ -1,11 +1,17 @@
 package com.it.attendance.student;
 
+import static android.content.ContentValues.TAG;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,6 +21,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.it.attendance.MainActivity;
 import com.it.attendance.R;
 import com.it.attendance.forgot_password;
@@ -30,7 +39,6 @@ public class Login_std extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.signin_student);
-
         emailEditText = findViewById(R.id.std_email);
         passwordEditText = findViewById(R.id.std_password);
         // Initialize Firebase Auth
@@ -47,6 +55,13 @@ public class Login_std extends AppCompatActivity {
         //move from login page to start student or lecturer page after validation
         btn=findViewById(R.id.std_signin);
         btn.setOnClickListener(view -> {
+            // Hide the keyboard
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(), 0);
+            pDialog = new KAlertDialog(this, KAlertDialog.PROGRESS_TYPE,false);
+            pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+            pDialog.setTitleText("Loading");
+            pDialog.setCancelable(false);
             LoginUser();
         });
 
@@ -58,11 +73,6 @@ public class Login_std extends AppCompatActivity {
             startActivity(intent);
         });
 
-
-        pDialog = new KAlertDialog(this, KAlertDialog.PROGRESS_TYPE,false);
-        pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
-        pDialog.setTitleText("Loading");
-        pDialog.setCancelable(false);
     }//end onCreate
     private void LoginUser(){
         // get string of email and password and remove any space
@@ -80,14 +90,35 @@ public class Login_std extends AppCompatActivity {
 
                             if (task.isSuccessful()) {
                                // Toast.makeText(Login_std.this, "Authentication successfully.", Toast.LENGTH_SHORT).show();
+                                // Get a reference to the document
+                                DocumentReference docRef = FirebaseFirestore.getInstance()
+                                        .collection("students").document(mAuth.getCurrentUser().getEmail());
+                                // Get the document
+                                docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            DocumentSnapshot document = task.getResult();
+                                            if (document.exists()) {
+                                                // Extract data from the document
+                                                Paper.init(getApplicationContext());
+                                                Paper.book().destroy();
+                                                Paper.book().write("Email", email);
+                                                Paper.book().write("Password", password);
+                                                Paper.book().write("isLoggedIn", "true");
+                                                Paper.book().write("type", "student");
+                                             //   Paper.book().write("name",document.getString("name"));
 
-                                Paper.init(getApplicationContext());
-                                Paper.book().destroy();
-
-                                Paper.book().write("Email", email);
-                                Paper.book().write("Password", password);
-                                Paper.book().write("isLoggedIn", "true");
-                                Paper.book().write("type", "student");
+                                                // Do something with the data
+                                                Log.d(TAG, "Document existed");
+                                            } else {
+                                                Log.d(TAG, "No such document!");
+                                            }
+                                        } else {
+                                            Log.w(TAG, "Error getting document", task.getException());
+                                        }
+                                    }
+                                });
 
                                 Intent intent = new Intent(Login_std.this, HomePage_std.class);
                                 pDialog.dismissWithAnimation();

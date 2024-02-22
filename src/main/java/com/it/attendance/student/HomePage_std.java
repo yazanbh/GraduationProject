@@ -7,24 +7,32 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.annotation.SuppressLint;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.it.attendance.Adapters.Students.Course;
 import com.it.attendance.Adapters.Students.stdAdapter;
 import com.it.attendance.R;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import io.paperdb.Paper;
 
 public class HomePage_std extends AppCompatActivity implements com.it.attendance.Adapters.Students.HomePage_std_interFace {
     BottomNavigationView bottomNavigationView;
@@ -81,6 +89,46 @@ public class HomePage_std extends AppCompatActivity implements com.it.attendance
         });//end bottom navigation view
 
 
+
+        // Get a reference to the document
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        DocumentReference docRef = FirebaseFirestore.getInstance()
+                .collection("students").document(mAuth.getCurrentUser().getEmail());
+        // Get the document
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Paper.init(getApplicationContext());
+                        // Extract data from the document
+                        String Name =document.getString("name");
+                        Paper.book().write("name",Name);
+
+                        if(document.getString("card")!=null){
+                        Paper.book().write("card",true);
+                        }
+                        else{
+                            Paper.book().write("card",false);
+                        }
+                        if(document.getString("phone")!=null){
+                            String phoneNumber =document.getString("phone");
+                            Paper.book().write("phone",phoneNumber.substring(0, 3) + " "
+                                    + phoneNumber.substring(3));
+                        }
+
+                        // Do something with the data
+                        Log.d(ContentValues.TAG, "Document existed");
+
+                    } else {
+                        Log.d(ContentValues.TAG, "No such document!");
+                    }
+                } else {
+                    Log.w(ContentValues.TAG, "Error getting document", task.getException());
+                }
+            }
+        });
 
 
     }//end oncreate
@@ -151,5 +199,12 @@ public class HomePage_std extends AppCompatActivity implements com.it.attendance
                 });
 
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(this, HomePage_std.class));
+        overridePendingTransition(0, 0);
     }
 }//end class

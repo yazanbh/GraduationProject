@@ -19,9 +19,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.it.attendance.R;
-import com.it.attendance.lecturer.Class_Detail_lecturer;
-
-import org.checkerframework.checker.optional.qual.Present;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,25 +30,27 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ViewHold
     private List<stdShow> studentList;
     FirebaseFirestore db;
     Context context;
+    private final AttendanceViewInterface recyclerViewInterface;
 
 
-    public StudentAdapter(Context context,List<stdShow> studentList) {
+    public StudentAdapter(Context context,List<stdShow> studentList,AttendanceViewInterface recyclerViewInterface) {
         this.studentList = studentList;
         this.context=context;
+        this.recyclerViewInterface = recyclerViewInterface;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.lecturer_student_details_info, parent, false);
-        return new ViewHolder(view);
+        return new ViewHolder(view,recyclerViewInterface);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         stdShow student = studentList.get(position);
         holder.nameText.setText(student.getName());
-        holder.emailText.setText(student.getEmail());
+        holder.emailText.setText(student.getEmail().substring(0,student.getEmail().indexOf("@")));
         Paper.init(context);
 
         String cNumber= Paper.book().read("courseNumber");
@@ -117,13 +116,23 @@ Log.e("yazaaaaaaaaaaan",cNumber);
 
         private TextView nameText,emailText,Absent,Present;
 
-        public ViewHolder(View itemView) {
+        public ViewHolder(View itemView, AttendanceViewInterface recyclerViewInterface) {
             super(itemView);
             nameText = itemView.findViewById(R.id.student_name_detail_adapter);
             emailText = itemView.findViewById(R.id.student_regNo_detail_adapter);
             Absent=itemView.findViewById(R.id.absent);
             Present=itemView.findViewById(R.id.present);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(recyclerViewInterface != null){
+                        int pos=getAdapterPosition();
+                        if(pos != RecyclerView.NO_POSITION){
+                            recyclerViewInterface.onItemClick(pos);
+                        }
+                    }
+                }
+            });
         }
     }
 }
-

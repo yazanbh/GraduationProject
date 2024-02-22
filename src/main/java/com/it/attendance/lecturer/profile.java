@@ -3,6 +3,7 @@ package com.it.attendance.lecturer;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -18,10 +19,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.it.attendance.R;
+
+import java.util.Objects;
 
 import io.paperdb.Paper;
 
@@ -33,6 +34,7 @@ public class profile extends AppCompatActivity {
     Context context;
     KAlertDialog pDialogSuccess,pDialogWarining,pDialogProgress;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,40 +57,18 @@ public class profile extends AppCompatActivity {
             } else return item.getItemId() == R.id.profile;
         });
         //display user profile info
-
+        Paper.init(getApplicationContext());
+        String name = Paper.book().read("name");
+        String id = Paper.book().read("Email");
         //get email for the current user from FirebaseAuth
-        String user= FirebaseAuth.getInstance().getCurrentUser().getEmail();
-        //get data for the current user from FireStore
-        DocumentReference docRef = null;
-        if (user != null) {
-            docRef = db.collection("lecturer").document(user);
-        }
-        if (docRef != null) {
-            docRef.get().addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        String name = document.getString("name").toUpperCase();
-                        String id = document.getString("email");
-                        // Process the data
-                        TextView username = findViewById(R.id.user_name);
-                        username.clearComposingText();
-                        username.setText(name);
-                        TextView userid = findViewById(R.id.u_id);
-                        String UID=id.substring(0,id.indexOf("@"));
-                        userid.clearComposingText();
-                        userid.setText("ID: "+UID);
-                        TextView eid = findViewById(R.id.email_id);
-                        eid.setText(user);
-                    } else {
-                        Log.d("TAG", "Document does not exist");
-                    }
-                } else {
-                    Log.d("TAG", "Failed to get document: ", task.getException());
-                }
-            });
-        }//end if doc!=null
-
+        TextView username = findViewById(R.id.user_name);
+        username.setText(name);
+        TextView userid = findViewById(R.id.u_id);
+        assert id != null;
+        String UID=id.substring(0,id.indexOf("@"));
+        userid.setText("ID: "+UID);
+        TextView eid = findViewById(R.id.email_id);
+        eid.setText(id);
 
         //LogOut
         ImageView logout = findViewById(R.id.LogOut);
@@ -154,6 +134,7 @@ public class profile extends AppCompatActivity {
 
 
         FirebaseUser firebaseUser = auth.getCurrentUser();
+        assert firebaseUser != null;
         if(firebaseUser.isEmailVerified()){
             ImageView imageView =findViewById(R.id.checkverf);
             imageView.setImageResource(R.drawable.checkmark);
@@ -187,7 +168,7 @@ public class profile extends AppCompatActivity {
                 }
             });
 
-            auth.sendPasswordResetEmail(auth.getCurrentUser().getEmail()).addOnCompleteListener(task -> {
+            auth.sendPasswordResetEmail(Objects.requireNonNull(auth.getCurrentUser().getEmail())).addOnCompleteListener(task -> {
                 if(task.isSuccessful()){
                     pDialogProgress.dismissWithAnimation();
                     pDialogSuccess.show();
@@ -228,7 +209,7 @@ public class profile extends AppCompatActivity {
 
             pDialogSuccess = new KAlertDialog(this, KAlertDialog.SUCCESS_TYPE,false);
             pDialogSuccess.setTitleText("Successfully");
-            pDialogSuccess.setContentText("Verification email sent to " + user.getEmail().toString());
+            pDialogSuccess.setContentText("Verification email sent to " + user.getEmail());
             pDialogSuccess.confirmButtonColor(R.color.blue);
             pDialogSuccess.setConfirmClickListener("Ok", new KAlertDialog.KAlertClickListener() {
                 @Override

@@ -6,6 +6,7 @@ import static android.content.ContentValues.TAG;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.helper.widget.MotionEffect;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -14,7 +15,6 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -28,7 +28,8 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;;
+import android.widget.Toast;
+import com.developer.kalert.KAlertDialog;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -42,15 +43,17 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.it.attendance.Adapters.ClassDetailLeacturer.AttendanceViewInterface;
 import com.it.attendance.Adapters.ClassDetailLeacturer.StudentAdapter;
 import com.it.attendance.Adapters.ClassDetailLeacturer.TakeAttendanceAdapter;
 import com.it.attendance.Adapters.ClassDetailLeacturer.stdShow;
+import com.it.attendance.CardEncrypt;
 import com.it.attendance.R;
 import com.pro100svitlo.creditCardNfcReader.CardNfcAsyncTask;
-
 import org.jetbrains.annotations.Nullable;
-
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -61,9 +64,13 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+
 import io.paperdb.Paper;
 
-public class Class_Detail_lecturer extends AppCompatActivity implements CardNfcAsyncTask.CardNfcInterface {
+public class Class_Detail_lecturer extends AppCompatActivity implements CardNfcAsyncTask.CardNfcInterface, AttendanceViewInterface {
     BottomNavigationView bottomNavigationView;
     TextView className , total_students;
     FirebaseFirestore db;
@@ -77,7 +84,7 @@ public class Class_Detail_lecturer extends AppCompatActivity implements CardNfcA
 
     List<String> list;
     private NfcAdapter mNfcAdapter;
-    private boolean mIntentFromCreate , start_take_attendance;
+    private boolean mIntentFromCreate;
     private cardNfcUtils mCardNfcUtils;
     private ProgressDialog mProgressDialog;
 
@@ -172,34 +179,27 @@ public class Class_Detail_lecturer extends AppCompatActivity implements CardNfcA
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         stdArrayList=new ArrayList<stdShow>();
-        stdAdapter=new StudentAdapter(getApplicationContext(),stdArrayList);
+        stdAdapter=new StudentAdapter(Class_Detail_lecturer.this,stdArrayList,this);
         takeAttendanceAdapter=new TakeAttendanceAdapter(getApplicationContext(),stdArrayList);
 
         //fetch names from firestore and view into lecturer
         getEnrollStudents();
         recyclerView.setAdapter(stdAdapter);
-       // stdAdapter.notifyDataSetChanged();
-       // takeAttendanceAdapter.notifyDataSetChanged();
 
         take_attendance.setOnClickListener(view->{
             //getDate();
             if(counter%2 != 0){
-                start_take_attendance=true;
                 counter++;
                 take_attendance.setText("Stop take attendance");
                 recyclerView.setAdapter(takeAttendanceAdapter);
                 takeAttendanceAdapter.notifyDataSetChanged();
             }
             else if(counter%2==0){
-                start_take_attendance=false;
                 take_attendance.setText("Start take attendance");
                 counter++;
-
                 recyclerView.setAdapter(stdAdapter);
                 stdAdapter.notifyDataSetChanged();
-
             }
-
         });
 
 
@@ -213,6 +213,7 @@ public class Class_Detail_lecturer extends AppCompatActivity implements CardNfcA
                 stdArrayList.clear();
                 getEnrollStudents();
                 stdAdapter.notifyDataSetChanged();
+                takeAttendanceAdapter.notifyDataSetChanged();
                 // Hide the refresh progress indicator once done
                 swipeRefreshLayout.setRefreshing(false);
 
@@ -260,6 +261,8 @@ public class Class_Detail_lecturer extends AppCompatActivity implements CardNfcA
                                 });
 
                             } catch (IllegalArgumentException e) {
+                                total_students.setText("0 Students");
+
                                 Log.e("TAG", "Error fetching students: " + e.getMessage());
                                 Toast.makeText(Class_Detail_lecturer.this, "Please Add Students", Toast.LENGTH_SHORT).show();
                                 OpenDialog();
@@ -367,6 +370,10 @@ public class Class_Detail_lecturer extends AppCompatActivity implements CardNfcA
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
+                                    stdArrayList.clear();
+                                    getEnrollStudents();
+                                    stdAdapter.notifyDataSetChanged();
+                                    takeAttendanceAdapter.notifyDataSetChanged();
                                     Toast.makeText(Class_Detail_lecturer.this, "Student added successfully to the course!", Toast.LENGTH_SHORT).show();
                                 }
                             })
@@ -440,6 +447,8 @@ public class Class_Detail_lecturer extends AppCompatActivity implements CardNfcA
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
+            takeAttendanceAdapter.notifyDataSetChanged();
+            stdAdapter.notifyDataSetChanged();
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -529,13 +538,12 @@ public class Class_Detail_lecturer extends AppCompatActivity implements CardNfcA
     protected void onResume() {
         super.onResume();
         mIntentFromCreate = false;
-        if(start_take_attendance) {
             if (mNfcAdapter != null && !mNfcAdapter.isEnabled()) {
                 showTurnOnNfcDialog();
             } else if (mNfcAdapter != null) {
                 Log.e("hamza", "nfc activeated");
                 mCardNfcUtils.enableDispatch();
-            }
+
         }//end if(start_take_attendance)
     }
 
@@ -576,33 +584,41 @@ public class Class_Detail_lecturer extends AppCompatActivity implements CardNfcA
 
     private void showTurnOnNfcDialog(){
         if (mTurnNfcDialog == null) {
+
             String title = "NFC is turned off.";
             String mess = "You need turn on NFC module for scanning. Wish turn on it now?";
             String pos = "Turn on";
             String neg = "Dismiss";
-            mTurnNfcDialog = new AlertDialog.Builder(this)
-                    .setTitle(title)
-                    .setMessage(mess)
-                    .setPositiveButton(pos, new DialogInterface.OnClickListener() {
+            KAlertDialog dialog =   new KAlertDialog(this, KAlertDialog.WARNING_TYPE,false);
+            dialog.setTitleText(title);
+            dialog.setContentText(mess);
+            dialog.confirmButtonColor(R.color.blue);
+            dialog.cancelButtonColor(R.color.blue);
+            dialog.setConfirmClickListener(pos, new KAlertDialog.KAlertClickListener() {
                         @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
+                        public void onClick(KAlertDialog kAlertDialog) {
                             // Send the user to the settings page and hope they turn it on
                             if (android.os.Build.VERSION.SDK_INT >= 16) {
                                 startActivity(new Intent(android.provider.Settings.ACTION_NFC_SETTINGS));
+                                finish();
                             } else {
                                 startActivity(new Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS));
+                                finish();
                             }
+
+                        }
+                    });
+            dialog.setCancelClickListener(neg, new KAlertDialog.KAlertClickListener() {
+                        @Override
+                        public void onClick(KAlertDialog kAlertDialog) {
+                            dialog.dismissWithAnimation();
                         }
                     })
-                    .setNegativeButton(neg, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            onBackPressed();
-                        }
-                    }).create();
-        }
-        mTurnNfcDialog.show();
+                    .show();
+
     }
+
+    }//end function
 
 
 
@@ -615,12 +631,17 @@ public class Class_Detail_lecturer extends AppCompatActivity implements CardNfcA
 
     @Override
     public void cardIsReadyToRead() {
-        String card = mCardNfcAsyncTask.getCardNumber();
-        card = getPrettyCardNumber(card);
-        String expiredDate = mCardNfcAsyncTask.getCardExpireDate();
-        String cardType = mCardNfcAsyncTask.getCardType();
+        String card = null;
+        try {
+            card = CardEncrypt.encrypt(mCardNfcAsyncTask.getCardNumber());
+        } catch (NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException |
+                 IllegalBlockSizeException | BadPaddingException e) {
+            throw new RuntimeException(e);
+        }
+        // String expiredDate = mCardNfcAsyncTask.getCardExpireDate();
+       // String cardType = mCardNfcAsyncTask.getCardType();
 
-        String mess = "card number : "+card;
+        String mess = "card number : "+ card;
         Toast.makeText(this,mess,Toast.LENGTH_SHORT).show();
         Log.d("card",mess);
         getEmailFromCardNumber(card);
@@ -642,7 +663,7 @@ public class Class_Detail_lecturer extends AppCompatActivity implements CardNfcA
                          }
                          if (task.getResult().size() == 0) {
                              // No document found with the given card number
-                         Toast.makeText(Class_Detail_lecturer.this, "The card number is not registered in the database", Toast.LENGTH_SHORT).show();
+                         Toast.makeText(Class_Detail_lecturer.this, "البطاقة غير مسجلة لدينا", Toast.LENGTH_SHORT).show();
 
                          }
                      } else {
@@ -668,22 +689,26 @@ public class Class_Detail_lecturer extends AppCompatActivity implements CardNfcA
                 @Override
                 public void onSuccess(Void unused) {
                     Log.d("TAG", "Attendance updated successfully!");
-                    Toast.makeText(Class_Detail_lecturer.this, "Attendance updated successfully!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Class_Detail_lecturer.this, "تم تسجيل الطالب "+Name+" حاضرا", Toast.LENGTH_SHORT).show();
                     takeAttendanceAdapter.notifyDataSetChanged();
                     stdAdapter.notifyDataSetChanged();
                 }
             }).addOnFailureListener(e -> {
-                Log.e("TAG", "Error updating attendance", e);
+                Log.e("TAG", "فشل تسجيل الحضور للطالب "+Name, e);
                 // Handle errors gracefully (e.g., display error message to user)
+                Toast.makeText(Class_Detail_lecturer.this, "فشل تسجيل الحضور للطالب "+Name, Toast.LENGTH_SHORT).show();
+
             });
 
         }
-        else if(list==null){
-            Toast.makeText(Class_Detail_lecturer.this, "Please add student before take attendance!", Toast.LENGTH_SHORT).show();
+        else if(list.isEmpty()){
+            Toast.makeText(Class_Detail_lecturer.this, "الرجاء اضافة طلاب الى المساق", Toast.LENGTH_SHORT).show();
         }//end else if
         else if (!list.contains(Email)){
-            Toast.makeText(Class_Detail_lecturer.this, "The Student is not in this Course!", Toast.LENGTH_SHORT).show();
-        }//end else
+            Toast.makeText(Class_Detail_lecturer.this, "هذا الطالب غير مسجل في المساق", Toast.LENGTH_SHORT).show();
+        }//end else if
+
+
     }//end function
 
 
@@ -718,4 +743,35 @@ public class Class_Detail_lecturer extends AppCompatActivity implements CardNfcA
     }
 
 
+    @Override
+    public void onItemClick(int postion) {
+
+        db.collection("students").whereIn("email",list).orderBy("email", Query.Direction.ASCENDING)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            // Get the list of documents
+                            List<DocumentSnapshot> documents = task.getResult().getDocuments();
+
+                            // Extract the string you want to move
+                            String email = documents.get(postion).getString("email");
+                            String name = documents.get(postion).getString("name");
+
+                            // Start Activity 2 and pass the string as an intent extra
+                            Intent intent = new Intent(Class_Detail_lecturer.this, StudentDetail.class);
+                            intent.putExtra("Email",email);
+                            intent.putExtra("number", CourseNumber);
+                            intent.putExtra("name", name);
+                            startActivity(intent);
+                            overridePendingTransition(0,0);
+                        } else {
+                            Log.w(MotionEffect.TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+
+
+    }
 }//end class

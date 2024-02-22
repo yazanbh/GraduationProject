@@ -37,7 +37,10 @@
             android:layout_marginRight="16dp"
             android:layout_marginBottom="5dp"
             android:layout_marginTop="16dp"
-            android:hint="Student name"/>
+            android:hint="Student name"
+            app:hintTextColor="#000000"
+            app:cursorColor="#000"
+            />
         <EditText
             android:id="@+id/regNo_student_popup"
             android:layout_width="match_parent"
@@ -48,6 +51,8 @@
             android:layout_marginBottom="5dp"
             android:layout_marginTop="5dp"
             android:hint="Reg. No"
+            app:hintTextColor="#000000"
+            app:cursorColor="#000"
             android:layout_below="@+id/name_student_popup"/>
 
         <LinearLayout

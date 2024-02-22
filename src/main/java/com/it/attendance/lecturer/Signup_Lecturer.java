@@ -2,15 +2,20 @@ package com.it.attendance.lecturer;
 
 import static android.provider.Settings.Secure;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.developer.kalert.KAlertDialog;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -22,15 +27,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Signup_Lecturer extends AppCompatActivity {
-    TextView signup;
+    Button signup;
     EditText Name,Email,pass1,pass2;
     private FirebaseAuth mAuth;
+    KAlertDialog pDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.signup_lecturer);
         //get device id to restrict users opens another account
+        @SuppressLint("HardwareIds")
         String deviceId = Secure.getString(getContentResolver(), Secure.ANDROID_ID);
 
         // Initialize Firebase Auth
@@ -43,8 +51,16 @@ public class Signup_Lecturer extends AppCompatActivity {
         pass2=findViewById(R.id.signup_lec_pass2);
         signup=findViewById(R.id.signup_lec_btn);
         signup.setOnClickListener(view -> {
-            if(validate()){
+            // Hide the keyboard
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(), 0);
 
+            if(validate()){
+                pDialog = new KAlertDialog(this, KAlertDialog.PROGRESS_TYPE,false);
+                pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+                pDialog.setTitleText("Loading");
+                pDialog.setCancelable(false);
+                pDialog.show();
                 mAuth.createUserWithEmailAndPassword(Email.getText().toString(), pass1.getText().toString())
                         .addOnSuccessListener(authResult -> {
                            /* mAuth.getCurrentUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -57,7 +73,7 @@ public class Signup_Lecturer extends AppCompatActivity {
                                }
                            });*/
                             Toast.makeText(Signup_Lecturer.this, "Lecturer Registered Successfully. ", Toast.LENGTH_SHORT).show();
-
+                            pDialog.dismissWithAnimation();
                             //store into firestore
                             FirebaseFirestore db = FirebaseFirestore.getInstance();
                             CollectionReference usersRef = db.collection("lecturer");
@@ -80,7 +96,10 @@ public class Signup_Lecturer extends AppCompatActivity {
                             Intent intent = new Intent(Signup_Lecturer.this, MainActivity.class);
                             startActivity(intent);
                         })
-                        .addOnFailureListener(e -> Toast.makeText(Signup_Lecturer.this, "cannot sign up", Toast.LENGTH_SHORT).show());
+                        .addOnFailureListener(e -> {
+                            pDialog.dismissWithAnimation();
+                            Toast.makeText(Signup_Lecturer.this, "cannot sign up", Toast.LENGTH_SHORT).show();
+                        });
             }//end if
 
 

@@ -31,4 +31,11 @@
     <color name="main_darkgrey">#5a5a5b</color>
     <color name="black">#000</color>
 
+
+
+    <color name="home">#2196F3</color>
+    <color name="activity">#673AB7</color>
+    <color name="favorites">#E91E63</color>
+    <color name="settings">#4CAF50</color>
+
 </resources>

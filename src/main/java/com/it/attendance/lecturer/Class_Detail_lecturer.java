@@ -3,14 +3,6 @@ package com.it.attendance.lecturer;
 
 import static android.content.ContentValues.TAG;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.helper.widget.MotionEffect;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -22,19 +14,26 @@ import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.helper.widget.MotionEffect;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.developer.kalert.KAlertDialog;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
@@ -43,6 +42,7 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 import com.it.attendance.Adapters.ClassDetailLeacturer.AttendanceViewInterface;
 import com.it.attendance.Adapters.ClassDetailLeacturer.StudentAdapter;
 import com.it.attendance.Adapters.ClassDetailLeacturer.TakeAttendanceAdapter;
@@ -50,7 +50,9 @@ import com.it.attendance.Adapters.ClassDetailLeacturer.stdShow;
 import com.it.attendance.CardEncrypt;
 import com.it.attendance.R;
 import com.pro100svitlo.creditCardNfcReader.CardNfcAsyncTask;
+
 import org.jetbrains.annotations.Nullable;
+
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -71,7 +73,7 @@ import javax.crypto.NoSuchPaddingException;
 import io.paperdb.Paper;
 
 public class Class_Detail_lecturer extends AppCompatActivity implements CardNfcAsyncTask.CardNfcInterface, AttendanceViewInterface {
-    BottomNavigationView bottomNavigationView;
+    ChipNavigationBar bottomNavigationView;
     TextView className , total_students;
     FirebaseFirestore db;
     Toolbar bar;
@@ -118,35 +120,29 @@ public class Class_Detail_lecturer extends AppCompatActivity implements CardNfcA
 
         //tool bar
         bar = findViewById(R.id.toolbar_class_detail);
-        bar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
+        bar.setOnMenuItemClickListener(item -> {
 
-                if (item.getItemId() == R.id.delete) {
-                    delete(CourseNumber);
-                    return true;
-                }
+            if (item.getItemId() == R.id.delete) {
+                delete(CourseNumber);
                 return true;
             }
+            return true;
         });
         //bottom nav bar
         bottomNavigationView = findViewById(R.id.BottomNavigationView);
-        bottomNavigationView.setSelectedItemId(R.id.home);
-        //disable center button in navbar
-        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+        //go to another page from navbar
+        bottomNavigationView.setOnItemSelectedListener(i -> {
+                    if(i==R.id.home) {
+                        onBackPressed();
+                    }
+                    else if (i == R.id.profile) {
+                        startActivity(new Intent(getApplicationContext(), profile.class));
+                        overridePendingTransition(0, 0);
+                    }
 
-            if (item.getItemId() == R.id.home) {
-                startActivity(new Intent(getApplicationContext(), lecturer_Home_Page.class));
-                overridePendingTransition(0, 0);
-                return true;
-            }else if (item.getItemId() == R.id.profile) {
-                startActivity(new Intent(getApplicationContext(), profile.class));
-                overridePendingTransition(0, 0);
-                return true;
-            }
+                }
 
-            return false;
-        });
+        );
 
         // add excele file of students
         add_std=findViewById(R.id.add_students);
@@ -479,60 +475,6 @@ public class Class_Detail_lecturer extends AppCompatActivity implements CardNfcA
         return selectedDate;
     }
 
-    void getStatus(){
-        Paper.init(getApplicationContext());
-
-        String cNumber= Paper.book().read("courseNumber");
-
-        Log.e("yazaaaaaaaaaaan",cNumber);
-        db = FirebaseFirestore.getInstance();
-
-        //list to get IsPresent Boolean if equal to true or false
-        List<Boolean> presentList = new ArrayList<>();
-        presentList.add(true);
-        presentList.add(false);
-
-        //document reference for attendance
-        CollectionReference collectionRef = db.collection("attendance").document(cNumber).collection("2000901023@st.aabu.edu.jo");
-
-        Query query = collectionRef.whereIn("IsPresent",presentList);
-        query.get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-
-                        if (task.isSuccessful()) {
-                            int present=0;
-                            int absent=0;
-
-                            for (DocumentSnapshot document : task.getResult()) {
-                                boolean isPresent = document.getBoolean("IsPresent");
-                                Log.e("successfully", "Adapter done");
-
-                                if (isPresent) {
-                                    present = present + 1;
-                                    Log.e("successfully", "present done" + String.valueOf(present));
-                                }//end if
-                                else {
-                                    absent = absent + 1;
-                                    Log.e("successfully", "absent done" + String.valueOf(absent));
-                                }//end else
-                            }//end for loop
-
-                        }
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.e("successfully", "Adapter failuer");
-
-                    }
-                });
-
-
-
-    }//end function
-
 
     @Override
     protected void onResume() {
@@ -634,6 +576,7 @@ public class Class_Detail_lecturer extends AppCompatActivity implements CardNfcA
         String card = null;
         try {
             card = CardEncrypt.encrypt(mCardNfcAsyncTask.getCardNumber());
+            Log.w(TAG,"card number has encrypted from " + mCardNfcAsyncTask.getCardNumber() +" to "+ card);
         } catch (NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException |
                  IllegalBlockSizeException | BadPaddingException e) {
             throw new RuntimeException(e);
@@ -643,7 +586,7 @@ public class Class_Detail_lecturer extends AppCompatActivity implements CardNfcA
 
         String mess = "card number : "+ card;
         Toast.makeText(this,mess,Toast.LENGTH_SHORT).show();
-        Log.d("card",mess);
+        Log.w("card",mess);
         getEmailFromCardNumber(card);
 
     }
@@ -664,7 +607,7 @@ public class Class_Detail_lecturer extends AppCompatActivity implements CardNfcA
                          if (task.getResult().size() == 0) {
                              // No document found with the given card number
                          Toast.makeText(Class_Detail_lecturer.this, "البطاقة غير مسجلة لدينا", Toast.LENGTH_SHORT).show();
-
+                         Log.e(TAG,"card number not found");
                          }
                      } else {
                          // Handle error
@@ -688,7 +631,7 @@ public class Class_Detail_lecturer extends AppCompatActivity implements CardNfcA
             collectionRef.document(today).set(data).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void unused) {
-                    Log.d("TAG", "Attendance updated successfully!");
+                    Log.d(TAG, "Attendance updated successfully!");
                     Toast.makeText(Class_Detail_lecturer.this, "تم تسجيل الطالب "+Name+" حاضرا", Toast.LENGTH_SHORT).show();
                     takeAttendanceAdapter.notifyDataSetChanged();
                     stdAdapter.notifyDataSetChanged();
@@ -697,15 +640,20 @@ public class Class_Detail_lecturer extends AppCompatActivity implements CardNfcA
                 Log.e("TAG", "فشل تسجيل الحضور للطالب "+Name, e);
                 // Handle errors gracefully (e.g., display error message to user)
                 Toast.makeText(Class_Detail_lecturer.this, "فشل تسجيل الحضور للطالب "+Name, Toast.LENGTH_SHORT).show();
+                Log.e(TAG,"Attendance updating failed!");
 
             });
 
         }
         else if(list.isEmpty()){
             Toast.makeText(Class_Detail_lecturer.this, "الرجاء اضافة طلاب الى المساق", Toast.LENGTH_SHORT).show();
+            Log.e(TAG,"no students in this course");
+
         }//end else if
         else if (!list.contains(Email)){
             Toast.makeText(Class_Detail_lecturer.this, "هذا الطالب غير مسجل في المساق", Toast.LENGTH_SHORT).show();
+            Log.e(TAG,"student is not enrolled in this course");
+
         }//end else if
 
 
@@ -734,12 +682,6 @@ public class Class_Detail_lecturer extends AppCompatActivity implements CardNfcA
         mProgressDialog.dismiss();
         mCardNfcAsyncTask = null;
         mIsScanNow = false;
-    }
-
-    private String getPrettyCardNumber(String card){
-        String div = "-";
-        return  card.substring(0,4) + div + card.substring(4,8) + div + card.substring(8,12)
-                +div + card.substring(12,16);
     }
 
 

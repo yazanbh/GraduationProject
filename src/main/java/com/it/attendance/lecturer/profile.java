@@ -1,25 +1,27 @@
 package com.it.attendance.lecturer;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.developer.kalert.KAlertDialog;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 import com.it.attendance.R;
 
 import java.util.Objects;
@@ -28,7 +30,7 @@ import io.paperdb.Paper;
 
 
 public class profile extends AppCompatActivity {
-    BottomNavigationView bottomNavigationView;
+    ChipNavigationBar bottomNavigationView;
     FirebaseFirestore db;
     private FirebaseAuth auth;
     Context context;
@@ -44,18 +46,25 @@ public class profile extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         auth=FirebaseAuth.getInstance();
         //initialize bottom navbar
+        //initialize bottom navbar
         bottomNavigationView = findViewById(R.id.BottomNavigationView);
-        bottomNavigationView.setSelectedItemId(R.id.profile);
+        bottomNavigationView.setItemSelected(R.id.profile,true);
+        new Handler().postDelayed(() -> bottomNavigationView.setItemSelected(R.id.profile,false), 3000);
 
         //go to another page from navbar
-        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+        bottomNavigationView.setOnItemSelectedListener(i -> {
+                    if(i==R.id.home){
+                        startActivity(new Intent(getApplicationContext(), lecturer_Home_Page.class));
+                        overridePendingTransition(0, 0);
+                    }
+                    else{
+                        bottomNavigationView.setItemSelected(R.id.profile,true);
+                        new Handler().postDelayed(() -> bottomNavigationView.setItemSelected(R.id.home,false), 3000);
 
-            if (item.getItemId() == R.id.home) {
-                startActivity(new Intent(getApplicationContext(), lecturer_Home_Page.class));
-                overridePendingTransition(0,0);
-                return true;
-            } else return item.getItemId() == R.id.profile;
-        });
+                    }
+                }
+        );
+
         //display user profile info
         Paper.init(getApplicationContext());
         String name = Paper.book().read("name");

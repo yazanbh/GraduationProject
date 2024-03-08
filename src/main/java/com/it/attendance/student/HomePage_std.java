@@ -1,22 +1,22 @@
 package com.it.attendance.student;
 
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
+import android.annotation.SuppressLint;
+import android.content.ContentValues;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import android.annotation.SuppressLint;
-import android.content.ContentValues;
-import android.content.Intent;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
@@ -24,10 +24,11 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.messaging.FirebaseMessaging;
+import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 import com.it.attendance.Adapters.Students.Course;
 import com.it.attendance.Adapters.Students.stdAdapter;
 import com.it.attendance.R;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -35,7 +36,7 @@ import java.util.Objects;
 import io.paperdb.Paper;
 
 public class HomePage_std extends AppCompatActivity implements com.it.attendance.Adapters.Students.HomePage_std_interFace {
-    BottomNavigationView bottomNavigationView;
+    ChipNavigationBar bottomNavigationView;
     FirebaseFirestore db;
     RecyclerView recyclerView;
     ArrayList<Course> courseArrayList;
@@ -47,9 +48,25 @@ public class HomePage_std extends AppCompatActivity implements com.it.attendance
         setContentView(R.layout.std_home_page);
         //initilaize firestore
         db = FirebaseFirestore.getInstance();
+
+
         //initialize bottom navbar
         bottomNavigationView = findViewById(R.id.BottomNavigationView);
-        bottomNavigationView.setSelectedItemId(R.id.home);
+        bottomNavigationView.setItemSelected(R.id.home,true);
+        new Handler().postDelayed(() -> bottomNavigationView.setItemSelected(R.id.home,false), 3000);
+        //go to another page from navbar
+        bottomNavigationView.setOnItemSelectedListener(i -> {
+           if(i==R.id.profile){
+             startActivity(new Intent(getApplicationContext(), profile_std.class));
+             overridePendingTransition(0, 0);
+             }
+           else{
+               bottomNavigationView.setItemSelected(R.id.home,true);
+               new Handler().postDelayed(() -> bottomNavigationView.setItemSelected(R.id.home,false), 3000);
+            }
+        });
+
+
         //recyclerview
         recyclerView=findViewById(R.id.recyclerView_detail1);
         recyclerView.setHasFixedSize(true);
@@ -75,18 +92,7 @@ public class HomePage_std extends AppCompatActivity implements com.it.attendance
             }
         });
         //go to another page from navbar
-        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
 
-            if (item.getItemId() == R.id.home) {
-                return true;
-            }
-            else if(item.getItemId() == R.id.profile) {
-                startActivity(new Intent(getApplicationContext(), profile_std.class));
-                overridePendingTransition(0,0);
-                return true;                }
-
-            return false;
-        });//end bottom navigation view
 
 
 

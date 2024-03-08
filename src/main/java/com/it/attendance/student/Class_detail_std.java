@@ -1,43 +1,31 @@
 package com.it.attendance.student;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.ImageView;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.annotation.SuppressLint;
-import android.content.Intent;
-import android.graphics.Color;
-import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
-import android.view.MenuItem;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import com.applandeo.materialcalendarview.CalendarDay;
 import com.applandeo.materialcalendarview.CalendarView;
 import com.applandeo.materialcalendarview.EventDay;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 import com.it.attendance.R;
-import com.it.attendance.lecturer.lecturer_Home_Page;
-import com.it.attendance.lecturer.profile;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -48,7 +36,7 @@ public class Class_detail_std extends AppCompatActivity {
     TextView cname,PresentCount,AbsentCount,percent;
     SwipeRefreshLayout swipeLayout;
     double present,absent;
-    BottomNavigationView bottomNavigationView;
+    ChipNavigationBar bottomNavigationView;
 
 
     @SuppressLint("SimpleDateFormat")
@@ -80,23 +68,22 @@ public class Class_detail_std extends AppCompatActivity {
 
         });
 
-        //bottom nav bar
+//initialize bottom navbar
         bottomNavigationView = findViewById(R.id.BottomNavigationView);
-        bottomNavigationView.setSelectedItemId(R.id.home);
-        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
 
-            if (item.getItemId() == R.id.home) {
+        //go to another page from navbar
+        bottomNavigationView.setOnItemSelectedListener(i -> {
+            if(i==R.id.home){
                 onBackPressed();
-                return true;
-            } else if (item.getItemId() == R.id.profile) {
+            }
+            else if (i == R.id.profile) {
                 startActivity(new Intent(getApplicationContext(), profile_std.class));
                 overridePendingTransition(0, 0);
-                return true;
             }
 
-            return false;
-        });
+        }
 
+        );
 
     }//end onCreate
 

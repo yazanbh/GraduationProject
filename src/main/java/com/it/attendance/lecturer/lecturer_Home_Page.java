@@ -2,12 +2,6 @@ package com.it.attendance.lecturer;
 
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.ContentValues;
@@ -16,18 +10,23 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.developer.kalert.KAlertDialog;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
@@ -37,10 +36,12 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 import com.it.attendance.Adapters.CoursesHomePageLecturer.MyAdapter;
 import com.it.attendance.Adapters.CoursesHomePageLecturer.RecyclerViewInterface;
 import com.it.attendance.Adapters.CoursesHomePageLecturer.course;
 import com.it.attendance.R;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,7 +51,7 @@ import java.util.Objects;
 import io.paperdb.Paper;
 
 public class lecturer_Home_Page extends AppCompatActivity implements RecyclerViewInterface {
-    BottomNavigationView bottomNavigationView;
+    ChipNavigationBar bottomNavigationView;
     FloatingActionButton fab;
     RecyclerView recyclerView;
     ArrayList<course> courseArrayList;
@@ -66,8 +67,26 @@ public class lecturer_Home_Page extends AppCompatActivity implements RecyclerVie
         //initilaize firestore
         db = FirebaseFirestore.getInstance();
         //initialize bottom navbar
+        //initialize bottom navbar
         bottomNavigationView = findViewById(R.id.BottomNavigationView);
-        bottomNavigationView.setSelectedItemId(R.id.home);
+        bottomNavigationView.setItemSelected(R.id.home,true);
+        new Handler().postDelayed(() -> bottomNavigationView.setItemSelected(R.id.home,false), 3000);
+        //go to another page from navbar
+        bottomNavigationView.setOnItemSelectedListener(i -> {
+            if(i==R.id.profile){
+                startActivity(new Intent(getApplicationContext(), profile.class));
+                overridePendingTransition(0,0);
+            }
+            else if (i== R.id.home){
+                bottomNavigationView.setItemSelected(R.id.home,true);
+                new Handler().postDelayed(() -> bottomNavigationView.setItemSelected(R.id.home,false), 3000);
+            } else if (i==R.id.fab) {
+                OpenDialog();
+                bottomNavigationView.setItemSelected(R.id.fab,false);
+            }
+        });
+
+
 
         //recyclerview
         recyclerView=findViewById(R.id.recyclerView_detail);
@@ -93,25 +112,6 @@ public class lecturer_Home_Page extends AppCompatActivity implements RecyclerVie
 
             }
         });
-
-
-        //go to another page from navbar
-        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
-
-            if (item.getItemId() == R.id.home) {
-                return true;
-            } else if(item.getItemId() == R.id.profile) {
-                startActivity(new Intent(getApplicationContext(), profile.class));
-                overridePendingTransition(0,0);
-                return true;                }
-
-            return false;
-        });//end bottom navigation view
-
-
-        //start fab
-        fab=findViewById(R.id.fab_main);
-        fab.setOnClickListener(view -> OpenDialog());//end fab onClickListener
 
 
         // Get a reference to the document

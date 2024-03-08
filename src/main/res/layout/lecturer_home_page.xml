@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     context=".lecturer_Home_Page">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -21,37 +20,18 @@
             />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <com.google.android.material.bottomappbar.BottomAppBar
-        android:id="@+id/BottomAppBar"
+
+    <com.ismaeldivita.chipnavigation.ChipNavigationBar
+        android:id="@+id/BottomNavigationView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="14sp"
         android:layout_gravity="bottom"
-        app:fabCradleRoundedCornerRadius="80dp"
-        app:contentInsetEnd="0dp"
-        app:contentInsetStart="0dp"
-        >
-
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/BottomNavigationView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            app:itemIconTint="@drawable/active_bottom"
-            app:itemTextColor="@drawable/active_bottom"
-            app:backgroundTint="@android:color/transparent"
-            app:elevation="0dp"
-            app:menu="@menu/std_nav_bar"
-            />
-    </com.google.android.material.bottomappbar.BottomAppBar>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_main"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/gradient_theme_oval"
-        app:layout_anchor="@id/BottomAppBar"
-        app:borderWidth="0dp"
-        app:tint="@null"
+        android:background="@android:color/white"
+        app:cnb_menuResource="@menu/lecturer_nav_bar"
+        app:cnb_unselectedColor="@android:color/black"
         />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

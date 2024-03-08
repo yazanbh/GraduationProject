@@ -1,58 +1,33 @@
 package com.it.attendance.student;
 
-import static android.content.ContentValues.TAG;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.InputFilter;
-import android.text.InputType;
-import android.text.TextWatcher;
+import android.os.Handler;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.developer.kalert.KAlertDialog;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
+import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 import com.it.attendance.R;
-import com.it.attendance.lecturer.Class_Detail_lecturer;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import io.paperdb.Paper;
 
 public class profile_std extends AppCompatActivity {
-    BottomNavigationView bottomNavigationView;
+    ChipNavigationBar bottomNavigationView;
     FirebaseFirestore db;
     private FirebaseAuth auth;
     Context context;
@@ -67,21 +42,25 @@ public class profile_std extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
         //initialize bottom navbar
-        bottomNavigationView = findViewById(R.id.BottomNavigationView);
-        bottomNavigationView.setSelectedItemId(R.id.profile);
-
+        bottomNavigationView = findViewById(R.id.bottom_nav_bar);
+        bottomNavigationView.setItemSelected(R.id.profile,true);
+        new Handler().postDelayed(() -> bottomNavigationView.setItemSelected(R.id.profile,false), 3000);
 
         //go to another page from navbar
-        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
-
-            if (item.getItemId() == R.id.home) {
+        bottomNavigationView.setOnItemSelectedListener(i -> {
+            if(i==R.id.home){
                 startActivity(new Intent(getApplicationContext(), HomePage_std.class));
                 overridePendingTransition(0, 0);
-                return true;
-            } else return item.getItemId() == R.id.profile;
-        });
-        //display user profile info
+            }
+            else{
+                bottomNavigationView.setItemSelected(R.id.profile,true);
+                new Handler().postDelayed(() -> bottomNavigationView.setItemSelected(R.id.home,false), 3000);
 
+            }
+        }
+        );
+
+        //display user profile info
 
         Paper.init(getApplicationContext());
         //set user email

@@ -96,19 +96,21 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/linearLayout3"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="240dp"
         android:layout_marginBottom="?actionBarSize">
+
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
             <LinearLayout
-                android:layout_marginTop="20sp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
-                >
+                android:layout_marginTop="20sp"
+                android:orientation="vertical">
                 <!--Option Bar-->
 
                 <!--Bootom Cards with sections-->
@@ -133,9 +135,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
-                            android:orientation="vertical"
                             android:layout_marginBottom="?actionBarSize"
-                            >
+                            android:orientation="vertical">
 
                             <LinearLayout
                                 android:id="@+id/verification"
@@ -150,6 +151,7 @@
                                     android:background="@drawable/circular_grey_bordersolid"
                                     android:padding="10dp"
                                     android:src="@drawable/verfication" />
+
                                 <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
@@ -157,29 +159,30 @@
                                     android:weightSum="8">
 
                                     <TextView
-                                        android:textDirection="ltr"
                                         android:layout_width="0dp"
-                                        android:layout_weight="6"
                                         android:layout_height="wrap_content"
                                         android:layout_marginLeft="20dp"
+                                        android:layout_weight="6"
+                                        android:fontFamily="@font/nunito"
                                         android:text="Verification"
-                                        android:textSize="18sp"
                                         android:textColor="@color/gray"
-                                        android:fontFamily="@font/nunito" />
+                                        android:textDirection="ltr"
+                                        android:textSize="18sp" />
+
                                     <ImageView
                                         android:id="@+id/checkverf"
                                         android:layout_width="0dp"
-                                        android:layout_weight="1"
-                                        android:src="@drawable/checkmark"
-                                        android:padding="5dp"
                                         android:layout_height="match_parent"
-                                        />
+                                        android:layout_weight="1"
+                                        android:padding="5dp"
+                                        android:src="@drawable/checkmark" />
+
                                     <ImageView
                                         android:layout_width="0dp"
-                                        android:layout_weight="1"
                                         android:layout_height="match_parent"
-                                        android:src="@drawable/forward"
-                                        android:layout_gravity="center_vertical"/>
+                                        android:layout_gravity="center_vertical"
+                                        android:layout_weight="1"
+                                        android:src="@drawable/forward" />
                                 </LinearLayout>
                             </LinearLayout>
 
@@ -206,22 +209,22 @@
                                     android:weightSum="8">
 
                                     <TextView
-                                        android:textDirection="ltr"
                                         android:layout_width="0dp"
-                                        android:layout_weight="7"
                                         android:layout_height="wrap_content"
                                         android:layout_marginLeft="20dp"
+                                        android:layout_weight="7"
+                                        android:fontFamily="@font/nunito"
                                         android:text="Change Password"
-                                        android:textSize="18sp"
                                         android:textColor="@color/gray"
-                                        android:fontFamily="@font/nunito" />
+                                        android:textDirection="ltr"
+                                        android:textSize="18sp" />
 
                                     <ImageView
                                         android:layout_width="0dp"
-                                        android:layout_weight="1"
                                         android:layout_height="match_parent"
-                                        android:src="@drawable/forward"
-                                        android:layout_gravity="center_vertical"/>
+                                        android:layout_gravity="center_vertical"
+                                        android:layout_weight="1"
+                                        android:src="@drawable/forward" />
                                 </LinearLayout>
                             </LinearLayout>
 
@@ -232,22 +235,21 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="10dp"
                                 android:background="@drawable/circularbordersolid"
-                                android:orientation="vertical"
-                                >
+                                android:orientation="vertical">
 
                                 <LinearLayout
-                                    android:layout_marginTop="10sp"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
+                                    android:layout_marginTop="10sp"
                                     android:orientation="horizontal">
 
                                     <TextView
-                                        android:textDirection="ltr"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:text="contact"
-                                        android:textSize="19sp"
                                         android:fontFamily="@font/nunito"
+                                        android:text="contact"
+                                        android:textDirection="ltr"
+                                        android:textSize="19sp"
                                         android:textStyle="bold" />
 
                                     <Space
@@ -277,14 +279,14 @@
                                             android:src="@drawable/ic_call_24dp" />
 
                                         <TextView
-                                            android:textDirection="ltr"
                                             android:layout_width="match_parent"
                                             android:layout_height="wrap_content"
                                             android:layout_marginLeft="18sp"
+                                            android:fontFamily="@font/nunito"
                                             android:text="962 775411853"
-                                            android:textSize="15sp"
                                             android:textColor="@color/gray"
-                                            android:fontFamily="@font/nunito" />
+                                            android:textDirection="ltr"
+                                            android:textSize="15sp" />
                                     </LinearLayout>
 
                                     <LinearLayout
@@ -302,16 +304,15 @@
                                             android:src="@drawable/ic_email_24dp" />
 
                                         <TextView
-                                            android:textDirection="ltr"
                                             android:id="@+id/email_id"
                                             android:layout_width="match_parent"
                                             android:layout_height="wrap_content"
                                             android:layout_marginLeft="18sp"
-                                            android:text="2000901023@st.aabu.edu.jo"
-                                            android:textSize="15sp"
-                                            android:textColor="@color/gray"
                                             android:fontFamily="@font/nunito"
-                                            />
+                                            android:text="2000901023@st.aabu.edu.jo"
+                                            android:textColor="@color/gray"
+                                            android:textDirection="ltr"
+                                            android:textSize="15sp" />
                                     </LinearLayout>
 
                                     <LinearLayout
@@ -329,14 +330,14 @@
                                             android:src="@drawable/ic_location_24dp" />
 
                                         <TextView
-                                            android:textDirection="ltr"
                                             android:layout_width="match_parent"
                                             android:layout_height="wrap_content"
                                             android:layout_marginLeft="18sp"
+                                            android:fontFamily="@font/nunito"
                                             android:text="Mafraq/Jordan"
-                                            android:textSize="15sp"
                                             android:textColor="@color/gray"
-                                            android:fontFamily="@font/nunito" />
+                                            android:textDirection="ltr"
+                                            android:textSize="15sp" />
                                     </LinearLayout>
 
                                 </LinearLayout>
@@ -356,38 +357,21 @@
         </ScrollView>
     </LinearLayout>
 
-    <com.google.android.material.bottomappbar.BottomAppBar
-        android:id="@+id/BottomAppBar"
+    <com.ismaeldivita.chipnavigation.ChipNavigationBar
+        android:id="@+id/BottomNavigationView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="14sp"
         android:layout_gravity="bottom"
-        app:fabCradleRoundedCornerRadius="80dp"
-        app:contentInsetEnd="0dp"
-        app:contentInsetStart="0dp"
-        >
+        android:background="@android:color/white"
+        android:elevation="8dp"
+        app:cnb_menuResource="@menu/lecturer_nav_bar"
+        app:cnb_unselectedColor="@android:color/black"
 
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/BottomNavigationView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            app:itemIconTint="@drawable/active_bottom"
-            app:itemTextColor="@drawable/active_bottom"
-            app:backgroundTint="@android:color/transparent"
-            app:elevation="0dp"
-            app:menu="@menu/std_nav_bar"
-            />
-    </com.google.android.material.bottomappbar.BottomAppBar>
-
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_main"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/gradient_theme_oval"
-        app:layout_anchor="@id/BottomAppBar"
-        app:borderWidth="0dp"
-        app:tint="@null"
         />
+
+
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

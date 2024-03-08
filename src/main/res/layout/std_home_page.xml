@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     context=".student.HomePage_std">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -22,27 +21,18 @@
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 
-    <com.google.android.material.bottomappbar.BottomAppBar
-        android:id="@+id/BottomAppBar"
+    <com.ismaeldivita.chipnavigation.ChipNavigationBar
+        android:id="@+id/BottomNavigationView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="14sp"
         android:layout_gravity="bottom"
-        app:fabCradleRoundedCornerRadius="80dp"
-        app:contentInsetEnd="0dp"
-        app:contentInsetStart="0dp"
-        >
+        android:background="@android:color/transparent"
+        android:elevation="8dp"
+        app:cnb_menuResource="@menu/std_nav_bar"
+        app:cnb_unselectedColor="@android:color/black" />
 
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/BottomNavigationView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            app:itemIconTint="@drawable/active_bottom"
-            app:itemTextColor="@drawable/active_bottom"
-            app:backgroundTint="@android:color/transparent"
-            app:elevation="0dp"
-            app:menu="@menu/std_nav_bar"
-            />
-    </com.google.android.material.bottomappbar.BottomAppBar>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

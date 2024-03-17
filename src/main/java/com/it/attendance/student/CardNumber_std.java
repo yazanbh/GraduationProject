@@ -2,13 +2,8 @@ package com.it.attendance.student;
 
 import static android.content.ContentValues.TAG;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
@@ -17,6 +12,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.braintreepayments.cardform.OnCardFormSubmitListener;
 import com.braintreepayments.cardform.view.CardEditText;
@@ -40,7 +38,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -149,7 +146,11 @@ public class CardNumber_std extends AppCompatActivity implements CardNfcAsyncTas
                         Log.d(TAG, "Document successfully updated!");
                         Paper.init(getApplicationContext());
                         Toast.makeText(getApplicationContext(), "Your card has been added", Toast.LENGTH_SHORT).show();
-                        Paper.book().write("card",false);
+                        Paper.book().write("card",true);
+                        Intent intent = new Intent(getApplicationContext(), profile_std.class);
+                        startActivity(intent);
+                        overridePendingTransition(0, 0);
+                        finish();
 
                     } else {
                         Log.w(TAG, "Error updating document", task.getException());
@@ -158,10 +159,7 @@ public class CardNumber_std extends AppCompatActivity implements CardNfcAsyncTas
                 }
             });
 
-            Intent intent = new Intent(getApplicationContext(), profile_std.class);
-            startActivity(intent);
-            overridePendingTransition(0, 0);
-            finish();
+
         } else {
             Toast.makeText(this, "Your card is invalid", Toast.LENGTH_SHORT).show();
         }

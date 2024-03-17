@@ -160,6 +160,7 @@ public class profile_std extends AppCompatActivity {
         UID.setOnClickListener(view->{
             startActivity(new Intent(this, CardNumber_std.class));
             overridePendingTransition(0, 0);
+            finish();
         });
 
 
